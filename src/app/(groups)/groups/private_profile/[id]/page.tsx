@@ -6,14 +6,28 @@ import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
 import MyGroups from "@/data/mygroups.json";
 import Nfts from "@/data/nfts.json";
+import groupsData from "@/data/groups.json";
+import NewGroupModal from "@/components/groups/modals/newGroupModal";
+import MintModal from "@/components/groups/modals/mintModal";
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import { useRouter } from "next/navigation";
+
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [isOpen, setIsOpen] = useState(false);
   const seletedGroup = MyGroups[Number(params.id)];
   const memebers_of_selectedGroup = seletedGroup.members;
+  const createGroupModalState = useGroupUIControlStore((state) => state.createGroupModal);
+  const mintModalState = useGroupUIControlStore((state) => state.mintModal);
+  const setCreateGroupModalState = useGroupUIControlStore((state) => state.updateCreateGroupModal);
+  const setMintModalState = useGroupUIControlStore((state) => state.updateMintModal);
+  const [uploadId, setUploadId] = useState<number>(-1) ;
+  const router = useRouter ();
+
   const _renderAvatar = (items: any[], index: number, len: number) => {
     if (index % 3 === 0 && index < len) {
       return (
         <div className="absolute left-[120%] top-[-117%] w-10 bg-gray-500 aspect-square rounded-full">
+
           <Image
             src="/rabbit.jpg"
             className="w-full h-full rounded-full object-cover"
@@ -54,29 +68,35 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   };
   return (
     <>
+        {createGroupModalState && <NewGroupModal />}
+        {mintModalState && <MintModal uploadId={uploadId} groupId={parseInt(params.id)}/>}
+
       <div className="flex justify-between w-full fixed bg-white top-[0px] h-[70px] border-b items-center p-3 z-10">
         <div>
-          <button className="border-2 border-black rounded-full px-5">
+          <button className="border-2 border-black rounded-full px-5" onClick={() => router.back()}>
             BACK
           </button>
         </div>
-        <div></div>
+        <div>
+          <button className="border-2 border-black rounded-full px-5" onClick={() => setCreateGroupModalState(true)}>
+            NEW GROUP
+          </button>
+        </div>
       </div>
       <div className="grouppage_container pt-[80px]">
-        <div
-          style={{ borderBottom: "3px solid #ccc" }}
+        <div  
           className="mt-5 mb-3"
         ></div>
         <div className="flex">
           <div>
-            <div className="gap-4 xl:grid grid-cols-2 lg:grid grid-cols-1 xl:w-[50%] xl:min-w-[920px]">
+            <div className="gap-4 xl:grid grid-cols-2 lg:grid xl:w-[50%] xl:min-w-[920px]">
               <div className="editGroup xs:text-white md:text-white xl:text-black lg:text-black ">
                 <a className="cursor-pointer">EDIT GROUP PROFILE </a>
               </div>
               <div className=" mt-5">
                 <Image
                   src={seletedGroup.avatar}
-                  className="w-full aspect-square"
+                  className="w-full h-full aspect-square"
                   alt="group_avatar"
                   width={300}
                   height={300}
@@ -165,8 +185,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                     <path
                       d="M4 6H20M4 12H20M4 18H20"
                       stroke="#000000"
-                      stroke-width="2"
-                      stroke-linecap="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
@@ -237,11 +257,13 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         </div>
         <div className="flex justify-between text-md mt-3">
           <div>SOLD (4)</div>
-          <div className="border-b-2 border-indigo-500"></div>
+          <div className="border-b-2 border-indigo-500">
+            VIEW ALL
+          </div>
         </div>
         <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
-          {Nfts.map((item, index) => (
-            <div key={index} className="items-center justify-center">
+          {groupsData[Number(params.id)].sold.map((item, index) => (
+            <div key={index} className="items-center justify-center cursor-pointer" onClick={() => router.push(`/details/sold/${params.id}/${index}`)}>
               <div className="border bg-gray-200">
                 <Image
                   src={item.avatar}
@@ -256,7 +278,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-md mt-3">
@@ -264,8 +286,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
         </div>
         <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
-          {Nfts.map((item, index) => (
-            <div key={index} className="items-center justify-center">
+          {groupsData[Number(params.id)].live.map((item, index) => (
+            <div key={index} className="items-center justify-center cursor-pointer" onClick={() => router.push(`/details/live/${params.id}/${index}`)}>
               <div className="border bg-gray-200">
                 <Image
                   src={item.avatar}
@@ -280,7 +302,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-md mt-3">
@@ -288,8 +310,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
         </div>
         <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
-          {Nfts.map((item, index) => (
-            <div key={index} className="items-center justify-center">
+          {groupsData[Number(params.id)].mint.map((item, index) => (
+            <div key={index} className="items-center justify-center cursor-pointer" onClick={() => router.push(`/details/mint/${params.id}/${index}`)}>
               <div className="border bg-gray-200">
                 <Image
                   src={item.avatar}
@@ -304,7 +326,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-lg">
@@ -351,7 +373,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
               {item !== 3 && (
                 <div
-                  style={{ borderBottom: "3px solid #ccc" }}
+                  
                   className="mt-5 mb-3 w-[50%]"
                 ></div>
               )}
@@ -359,7 +381,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-xl">
@@ -371,16 +393,16 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="border-b-2 border-indigo-500"></div>
         </div>
         <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
-          {[1, 2, 3, 4, 5].map((item: number) => (
+          {[0, 1, 2, 3].map((item: number) => (
             <div key={item} className="flex flex-col">
               <div>
                 <div className="content-card border bg-gray-200 relative ">
-                  {item === 5 && (
+                  {item === 3 && (
                     <div className="w-full aspect-square flex justify-center items-center">
                       <div>UPLOAD NEW</div>
                     </div>
                   )}
-                  {item !== 5 && (
+                  {item !== 3 && (
                     <Image
                       src="/rabbit.jpg"
                       className="w-full h-full aspect-square object-cover"
@@ -389,9 +411,9 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                       alt="uploaded content"
                     />
                   )}
-                  {item !== 5 && (
+                  {item !== 3 && (
                     <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-chocolate-main/50">
-                      <button className="border bg-[#322A44] text-white rounded-full pt-2 pb-2 pl-3 pr-3 w-1/2 text-lg">
+                      <button className="border bg-[#322A44] text-white rounded-full pt-2 pb-2 pl-3 pr-3 w-1/2 text-lg" onClick={() => {setMintModalState(true); setUploadId(item);}}>
                         MINT
                       </button>
                       <button className="border bg-[#EF2121] text-white rounded-full pt-2 pb-2 pl-3 pr-3 w-1/2 text-lg">
@@ -401,14 +423,14 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   )}
                 </div>
               </div>
-              {item !== 5 && (
+              {item !== 3 && (
                 <div className="mt-3">{item === 1 ? "UNTITLED" : "TITLE"}</div>
               )}
             </div>
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-center items-center mt-5">
@@ -417,7 +439,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </button>
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
 
@@ -482,7 +504,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           your group!
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-xl">
@@ -514,7 +536,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-xl">
@@ -537,7 +559,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-xl">
@@ -547,7 +569,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         <div className="flex items-center mt-5 gap-5 text-xl">
           <div className="w-10 h-10 bg-gray-500 aspect-square rounded-full">
             <img
-              src="/group_profile.jpg"
+              src="/rabbit.jpg"
               className="w-full h-full rounded-full"
             />
           </div>
@@ -563,7 +585,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
         <div className="flex justify-between text-xl">
@@ -573,7 +595,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         <div className="flex items-center mt-5 gap-5 text-xl">
           <div className="w-10 h-10 bg-gray-500 aspect-square rounded-full">
             <img
-              src="/group_profile.jpg"
+              src="/rabbit.jpg"
               className="w-full h-full rounded-full"
             />
           </div>
@@ -591,7 +613,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
 
@@ -601,7 +623,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </button>
         </div>
         <div
-          style={{ borderBottom: "3px solid #ccc" }}
+          
           className="mt-5 mb-3"
         ></div>
       </div>

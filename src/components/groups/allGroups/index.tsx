@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import Card from "../myGroups/card";
 import groups from "@/data/groups.json";

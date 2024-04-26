@@ -1,24 +1,38 @@
 "use client";
 
 import React, { useState } from "react";
-
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
 import MyGroups from "@/data/mygroups.json";
 import Nfts from "@/data/nfts.json";
+import NewGroupModal from "@/components/groups/modals/newGroupModal";
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import { useRouter } from "next/navigation";
+
+
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [isOpen, setIsOpen] = useState(false);
   const seletedGroup = MyGroups[Number(params.id)];
   const memebers_of_selectedGroup = seletedGroup.members;
+  const [scale, setScale] = React.useState<number>(50);
+  const createGroupModalState = useGroupUIControlStore((state) => state.createGroupModal);
+  const setCreateGroupModalState = useGroupUIControlStore((state) => state.updateCreateGroupModal);
+  const router = useRouter ();
+
   return (
     <>
+      {createGroupModalState && <NewGroupModal />}
       <div className="flex justify-between w-full fixed bg-white top-[0px] h-[70px] border-b items-center p-3 z-10">
         <div>
-          <button className="border-2 border-black rounded-full px-5">
+          <button className="border-2 border-black rounded-full px-5" onClick={() => router.back()}>
             BACK
           </button>
         </div>
-        <div></div>
+        <div>
+          <button className="border-2 border-black rounded-full px-5" onClick={() => setCreateGroupModalState(true)}>
+            NEW GROUP
+          </button>
+        </div>
       </div>
       <div className="grouppage_container pt-[80px]">
         <div
@@ -27,7 +41,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         ></div>
         <div className="flex">
           <div>
-            <div className="gap-4 xl:grid grid-cols-2 lg:grid grid-cols-1 xl:w-[50%] xl:min-w-[920px]">
+            <div className="gap-4 xl:grid grid-cols-2 lg:grid lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px]">
               <div className="editGroup xs:text-white md:text-white xl:text-black lg:text-black ">
                 <a className="cursor-pointer">EDIT GROUP PROFILE </a>
               </div>
@@ -123,8 +137,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                     <path
                       d="M4 6H20M4 12H20M4 18H20"
                       stroke="#000000"
-                      stroke-width="2"
-                      stroke-linecap="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>

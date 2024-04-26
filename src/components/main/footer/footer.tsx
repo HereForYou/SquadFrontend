@@ -1,3 +1,4 @@
+"use client"
 import FooterLogoAnimation from "./footerLogoAnimation";
 import { useState } from "react";
 
@@ -104,9 +105,9 @@ const Footer = () => {
                       <svg
                         className="w-[9px] h-[9px] text-white"
                         fill="none"
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         strokeLinejoin="round"
-                        stroke-width="2"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >

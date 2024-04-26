@@ -25,8 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <AosProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
+      <html lang="en" suppressHydrationWarning={true}>
+        <head></head>
+        <body className={inter.className} suppressHydrationWarning={true}>
+          {children}
+        </body>
       </html>
     </AosProvider>
   );

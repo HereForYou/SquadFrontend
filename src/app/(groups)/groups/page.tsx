@@ -8,15 +8,24 @@ import Recruiting from "@/components/groups/groupSearch/recruiting";
 import SearchInput from "@/components/groups/groupSearch/search";
 import AllGroup from "@/components/groups/allGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
+import NewGroupModal from "@/components/groups/modals/newGroupModal";
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+
+
 export default function Home() {
   const [scale, setScale] = React.useState<number>(50);
+  const createGroupModalState = useGroupUIControlStore((state) => state.createGroupModal);
+  const setCreateGroupModalState = useGroupUIControlStore((state) => state.updateCreateGroupModal);
 
   return (
     <>
       <div className="flex justify-between w-full fixed bg-white top-[0px] h-[70px] border-b items-center p-3 z-10">
-        <div></div>
+        {createGroupModalState && <NewGroupModal />}
         <div>
-          <button className="border-2 border-black rounded-full px-5">
+
+        </div>
+        <div>
+          <button className="border-2 border-black rounded-full px-5" onClick={() => setCreateGroupModalState(true)}>
             NEW GROUP
           </button>
         </div>
@@ -39,7 +48,7 @@ export default function Home() {
         <div className=" mb-5 grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-0 lg:grid-cols-[10%_15%_35%_40%] items-center justify-around">
           <Sort />
           <ViewProgress scale={scale} setScale={setScale} />
-          <Recruiting />
+          <Recruiting name={"ACTIVELY RECRUITING"}/>
           <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px]">
             <input
               className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"

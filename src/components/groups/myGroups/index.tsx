@@ -1,6 +1,8 @@
+"use client"
 import React from "react";
 import Card from "./card";
 import data from "@/data/mygroups.json";
+
 
 const MyGroup: React.FC = () => {
   return (
