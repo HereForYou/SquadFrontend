@@ -24,6 +24,11 @@ const config: Config = {
       colors: {
         "chocolate-main": "#322a44",
       },
+      extend: {
+        screens: {
+          'xs': '450px',
+        }
+      },
     },
   },
   plugins: [
