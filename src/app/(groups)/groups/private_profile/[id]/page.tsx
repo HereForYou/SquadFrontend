@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
-import Image from "next/image";
+import Image from "next/image"; 
 import MyGroups from "@/data/mygroups.json";
 import Nfts from "@/data/nfts.json";
 import groupsData from "@/data/groups.json";
